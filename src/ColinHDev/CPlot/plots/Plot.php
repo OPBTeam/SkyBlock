@@ -322,7 +322,7 @@ class Plot extends BasePlot {
      * @return bool Returns TRUE if the player was successfully teleported or FALSE if not.
      * @throws \RuntimeException when called outside of main thread.
      */
-    public function teleportTo(Player $player, int $destination = TeleportDestination::PLOT_SPAWN_OR_EDGE) : bool {
+    public function teleportTo(Player $player, int $destination = TeleportDestination::PLOT_CENTER) : bool {
         if ($destination === TeleportDestination::PLOT_SPAWN_OR_EDGE || $destination === TeleportDestination::PLOT_SPAWN_OR_CENTER) {
             $flag = $this->getLocalFlag(Flags::SPAWN());
             if ($flag instanceof SpawnFlag) {
@@ -332,6 +332,7 @@ class Plot extends BasePlot {
                 }
                 /** @var Location $relativeSpawn */
                 $relativeSpawn = $flag->getValue();
+                var_dump("debug1");
                 return $player->teleport(
                     Location::fromObject(
                         $relativeSpawn->addVector($this->getVector3()),
@@ -353,7 +354,6 @@ class Plot extends BasePlot {
                 );
             }
         }
-
         return $player->teleport($location->addVector($this->worldSettings->getDeviatedVector()));
     }
 

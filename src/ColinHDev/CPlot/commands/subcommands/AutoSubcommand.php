@@ -7,14 +7,15 @@ namespace ColinHDev\CPlot\commands\subcommands;
 use ColinHDev\CPlot\commands\PlotCommand;
 use ColinHDev\CPlot\commands\Subcommand;
 use ColinHDev\CPlot\player\PlayerData;
+use ColinHDev\CPlot\plots\flags\Flags;
 use ColinHDev\CPlot\plots\Plot;
 use ColinHDev\CPlot\plots\PlotPlayer;
-use ColinHDev\CPlot\plots\TeleportDestination;
 use ColinHDev\CPlot\provider\DataProvider;
 use ColinHDev\CPlot\provider\LanguageManager;
 use ColinHDev\CPlot\ResourceManager;
 use ColinHDev\CPlot\worlds\WorldSettings;
 use pocketmine\command\CommandSender;
+use pocketmine\entity\Location;
 use pocketmine\player\Player;
 use function is_string;
 
@@ -83,11 +84,18 @@ class AutoSubcommand extends Subcommand {
             return null;
         }
 
-        if (!($plot->teleportTo($sender, TeleportDestination::PLOT_CENTER))) {
+        if (!($plot->teleportTo($sender))) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "auto.teleportError" => [$plot->getWorldName(), $plot->getX(), $plot->getZ()]]);
             return null;
         }
-
+        $location = $sender->getLocation();
+        $flag = Flags::SPAWN()->createInstance(Location::fromObject(
+            $location->subtractVector($plot->getVector3()),
+            $sender->getWorld(),
+            $location->getYaw(),
+            $location->getPitch()
+        ));
+        $plot->addFlag($flag);
         yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "auto.success" => [$plot->getWorldName(), $plot->getX(), $plot->getZ()]]);
         if ($this->automaticClaim) {
             yield from $claimSubcommand->execute($sender, []);

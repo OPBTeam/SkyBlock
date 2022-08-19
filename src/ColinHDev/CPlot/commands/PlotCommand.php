@@ -63,7 +63,7 @@ class PlotCommand extends Command implements PluginOwned {
         $this->registerSubcommand(new AddSubcommand("add"));
         $this->registerSubcommand(new AutoSubcommand("auto", $this));
         $this->registerSubcommand(new BiomeSubcommand("biome"));
-        $this->registerSubcommand(new BorderSubcommand("border"));
+        //$this->registerSubcommand(new BorderSubcommand("border"));
         $this->registerSubcommand(new ClaimSubcommand("claim"));
         $this->registerSubcommand(new ClearSubcommand("clear"));
         $this->registerSubcommand(new DeniedSubcommand("denied"));
@@ -84,7 +84,7 @@ class PlotCommand extends Command implements PluginOwned {
         $this->registerSubcommand(new UndenySubcommand("undeny"));
         $this->registerSubcommand(new UntrustSubcommand("untrust"));
         $this->registerSubcommand(new VisitSubcommand("visit"));
-        $this->registerSubcommand(new WallSubcommand("wall"));
+        //$this->registerSubcommand(new WallSubcommand("wall"));
         $this->registerSubcommand(new WarpSubcommand("warp"));
     }
 

@@ -19,10 +19,21 @@ use pocketmine\Server;
  */
 class VisitSubcommand extends Subcommand {
 
+    private CONST DEFAULT_WORLD = "skyblock";
+
     public function execute(CommandSender $sender, array $args) : \Generator {
         if (!$sender instanceof Player) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "visit.senderNotOnline"]);
             return null;
+        }
+
+        if($sender->getWorld()->getDisplayName() !== self::DEFAULT_WORLD){
+            $defaultWorld = Server::getInstance()->getWorldManager()->getWorldByName(self::DEFAULT_WORLD);
+            if($defaultWorld === null){
+                yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "visit.invalidWorld"]);
+                return null;
+            }
+            $sender->teleport($defaultWorld->getSpawnLocation());
         }
 
         switch (count($args)) {
