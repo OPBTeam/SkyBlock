@@ -9,6 +9,7 @@ use pocketmine\block\BlockFactory;
 use pocketmine\block\UnknownBlock;
 use pocketmine\data\bedrock\LegacyBlockIdToStringIdMap;
 use pocketmine\item\StringToItemParser;
+use pocketmine\math\Vector3;
 
 class ParseUtils {
 
@@ -44,6 +45,21 @@ class ParseUtils {
             return self::parseBlockFromString($array[$key]);
         }
         return null;
+    }
+
+    public static function parseVectorFromString(string $deviatedVector) :Vector3 {
+        $vectorData = explode(";", $deviatedVector);
+        $x = self::parseIntegerFromArray($vectorData, 0);
+        $y = self::parseIntegerFromArray($vectorData, 1);
+        $z = self::parseIntegerFromArray($vectorData, 2);
+        if ($x === null || $y === null || $z === null) {
+            return new Vector3(0, 0, 0);
+        }
+        return new Vector3($x, $y, $z);
+    }
+
+    public static function parseStringFromVector(Vector3 $vector) : string {
+        return $vector->getX() . ";" . $vector->getY() . ";" . $vector->getZ();
     }
 
     public static function parseBlockFromString(string $blockIdentifier) : ?Block {

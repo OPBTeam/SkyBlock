@@ -9,6 +9,7 @@ use ColinHDev\CPlot\commands\Subcommand;
 use ColinHDev\CPlot\player\PlayerData;
 use ColinHDev\CPlot\plots\Plot;
 use ColinHDev\CPlot\plots\PlotPlayer;
+use ColinHDev\CPlot\plots\TeleportDestination;
 use ColinHDev\CPlot\provider\DataProvider;
 use ColinHDev\CPlot\provider\LanguageManager;
 use ColinHDev\CPlot\ResourceManager;
@@ -82,7 +83,7 @@ class AutoSubcommand extends Subcommand {
             return null;
         }
 
-        if (!($plot->teleportTo($sender))) {
+        if (!($plot->teleportTo($sender, TeleportDestination::PLOT_CENTER))) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "auto.teleportError" => [$plot->getWorldName(), $plot->getX(), $plot->getZ()]]);
             return null;
         }

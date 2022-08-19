@@ -64,6 +64,8 @@ worldSettings:
     # the block that makes up the bottom of the plots
     # default value: "Bedrock"
     plotBottomBlock: "Bedrock"
+    # spawn deviation of each island when using the 'schematic' is different so take precautions
+    deviatedVector: "-35;0;-35"
 
 # Define the default values for all the flags.
 # This array does only contain all the flags which are most likely to get their default value changed by server owners.

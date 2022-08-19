@@ -9,6 +9,7 @@ use ColinHDev\CPlot\utils\ParseUtils;
 use pocketmine\block\Block;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\data\bedrock\BiomeIds;
+use pocketmine\math\Vector3;
 
 class WorldSettings {
 
@@ -30,8 +31,9 @@ class WorldSettings {
     private Block $plotFloorBlock;
     private Block $plotFillBlock;
     private Block $plotBottomBlock;
+    private Vector3 $deviatedVector;
 
-    public function __construct(string $worldType, int $biomeID, string $roadSchematic, string $mergeRoadSchematic, string $plotSchematic, int $roadSize, int $plotSize, int $groundSize, Block $roadBlock, Block $borderBlock, Block $plotFloorBlock, Block $plotFillBlock, Block $plotBottomBlock) {
+    public function __construct(string $worldType, int $biomeID, string $roadSchematic, string $mergeRoadSchematic, string $plotSchematic, int $roadSize, int $plotSize, int $groundSize, Block $roadBlock, Block $borderBlock, Block $plotFloorBlock, Block $plotFillBlock, Block $plotBottomBlock, Vector3 $deviatedVector) {
         $this->worldType = $worldType;
         $this->biomeID = $biomeID;
 
@@ -48,6 +50,7 @@ class WorldSettings {
         $this->plotFloorBlock = $plotFloorBlock;
         $this->plotFillBlock = $plotFillBlock;
         $this->plotBottomBlock = $plotBottomBlock;
+        $this->deviatedVector = $deviatedVector;
     }
 
     public function getWorldType() : string {
@@ -102,6 +105,10 @@ class WorldSettings {
         return $this->plotBottomBlock;
     }
 
+    public function getDeviatedVector() : Vector3 {
+        return $this->deviatedVector;
+    }
+
     /**
      * @phpstan-return array{worldType: string, biomeID: int, roadSchematic: string, mergeRoadSchematic: string, plotSchematic: string, roadSize: int, plotSize: int, groundSize: int, roadBlock: string, borderBlock: string, plotFloorBlock: string, plotFillBlock: string, plotBottomBlock: string}
      */
@@ -122,7 +129,9 @@ class WorldSettings {
             "borderBlock" => ParseUtils::parseStringFromBlock($this->borderBlock),
             "plotFloorBlock" => ParseUtils::parseStringFromBlock($this->plotFloorBlock),
             "plotFillBlock" => ParseUtils::parseStringFromBlock($this->plotFillBlock),
-            "plotBottomBlock" => ParseUtils::parseStringFromBlock($this->plotBottomBlock)
+            "plotBottomBlock" => ParseUtils::parseStringFromBlock($this->plotBottomBlock),
+
+            "deviatedVector" => ParseUtils::parseStringFromVector($this->deviatedVector),
         ];
     }
 
@@ -159,12 +168,14 @@ class WorldSettings {
         $plotFloorBlock = ParseUtils::parseBlockFromArray($settings, "plotFloorBlock") ?? VanillaBlocks::GRASS();
         $plotFillBlock = ParseUtils::parseBlockFromArray($settings, "plotFillBlock") ?? VanillaBlocks::DIRT();
         $plotBottomBlock = ParseUtils::parseBlockFromArray($settings, "plotBottomBlock") ?? VanillaBlocks::BEDROCK();
+        $deviatedVector = ParseUtils::parseVectorFromString(ParseUtils::parseStringFromArray($settings, "deviatedVector")) ?? new Vector3(-35, 0, -35);
 
         return new self(
             $worldType, $biomeID,
             $roadSchematic, $mergeRoadSchematic, $plotSchematic,
             $roadSize, $plotSize, $groundSize,
-            $roadBlock, $borderBlock, $plotFloorBlock, $plotFillBlock, $plotBottomBlock
+            $roadBlock, $borderBlock, $plotFloorBlock, $plotFillBlock, $plotBottomBlock,
+            $deviatedVector
         );
     }
 }

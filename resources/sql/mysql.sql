@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS worlds(
     plotFloorBlock      TEXT            NOT NULL,
     plotFillBlock       TEXT            NOT NULL,
     plotBottomBlock     TEXT            NOT NULL,
+    deviatedVector      TEXT            NOT NULL,
     PRIMARY KEY (worldName)
 );
 -- #    }

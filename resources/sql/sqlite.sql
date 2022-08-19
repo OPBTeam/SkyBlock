@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS worlds (
     plotFloorBlock      TEXT            NOT NULL,
     plotFillBlock       TEXT            NOT NULL,
     plotBottomBlock     TEXT            NOT NULL,
+    deviatedVector      TEXT            NOT NULL,
     PRIMARY KEY (worldName)
 );
 -- #    }
@@ -281,18 +282,21 @@ VALUES (:playerID, :ID, :value);
 -- #      :plotFloorBlock string
 -- #      :plotFillBlock string
 -- #      :plotBottomBlock string
+-- #      :deviatedVector string
 INSERT OR REPLACE INTO worlds (
     worldName,
     worldType, biomeID,
     roadSchematic, mergeRoadSchematic, plotSchematic,
     roadSize, plotSize, groundSize,
-    roadBlock, borderBlock, plotFloorBlock, plotFillBlock, plotBottomBlock
+    roadBlock, borderBlock, plotFloorBlock, plotFillBlock, plotBottomBlock,
+    deviatedVector
 ) VALUES (
     :worldName,
     :worldType, :biomeID,
     :roadSchematic, :mergeRoadSchematic, :plotSchematic,
     :roadSize, :plotSize, :groundSize,
-    :roadBlock, :borderBlock, :plotFloorBlock, :plotFillBlock, :plotBottomBlock
+    :roadBlock, :borderBlock, :plotFloorBlock, :plotFillBlock, :plotBottomBlock,
+    :deviatedVector
 );
 -- #    }
 -- #    { plotAlias

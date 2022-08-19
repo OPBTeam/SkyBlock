@@ -50,7 +50,7 @@ class SchematicGenerator extends Generator {
             }
         }
 
-        /** @phpstan-var array{worldName: string, biomeID?: int, schematicName?: string, schematicType?: string, roadSize?: int, plotSize?: int, groundSize?: int, roadBlock?: string, borderBlock?: string, plotFloorBlock?: string, plotFillBlock?: string, plotBottomBlock?: string} $generatorOptions */
+        /** @phpstan-var array{worldName: string, biomeID?: int, schematicName?: string, schematicType?: string, roadSize?: int, plotSize?: int, groundSize?: int, roadBlock?: string, borderBlock?: string, plotFloorBlock?: string, plotFillBlock?: string, plotBottomBlock?: string, deviatedVector?: string} $generatorOptions */
         $worldName = ParseUtils::parseStringFromArray($generatorOptions, "worldName");
         assert(is_string($worldName));
         $this->worldName = $worldName;

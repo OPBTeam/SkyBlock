@@ -353,7 +353,8 @@ class Plot extends BasePlot {
                 );
             }
         }
-        return $player->teleport($location);
+
+        return $player->teleport($location->addVector($this->worldSettings->getDeviatedVector()));
     }
 
     /**
