@@ -332,7 +332,6 @@ class Plot extends BasePlot {
                 }
                 /** @var Location $relativeSpawn */
                 $relativeSpawn = $flag->getValue();
-                var_dump("debug1");
                 return $player->teleport(
                     Location::fromObject(
                         $relativeSpawn->addVector($this->getVector3()),
