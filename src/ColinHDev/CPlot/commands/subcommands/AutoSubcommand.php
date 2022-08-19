@@ -17,6 +17,7 @@ use ColinHDev\CPlot\worlds\WorldSettings;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Location;
 use pocketmine\player\Player;
+use pocketmine\Server;
 use function is_string;
 
 /**
@@ -66,26 +67,28 @@ class AutoSubcommand extends Subcommand {
             }
         }
 
+        $defaultWorld = Server::getInstance()->getWorldManager()->getDefaultWorld();
+
         $worldName = $sender->getWorld()->getFolderName();
         $worldSettings = yield from DataProvider::getInstance()->awaitWorld($worldName);
         if (!($worldSettings instanceof WorldSettings) && is_string($this->fallbackWorld)) {
             $worldName = $this->fallbackWorld;
             $worldSettings = yield from DataProvider::getInstance()->awaitWorld($worldName);
-        }
-        if (!($worldSettings instanceof WorldSettings)) {
-            yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "auto.noPlotWorld"]);
-            return null;
+            $worldFallback = Server::getInstance()->getWorldManager()->getWorldByName($worldName);
+            $sender->teleport($worldFallback->getSpawnLocation());
         }
 
         /** @var Plot|null $plot */
         $plot = yield DataProvider::getInstance()->awaitNextFreePlot($worldName, $worldSettings);
         if ($plot === null) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "auto.noPlotFound"]);
+            $sender->teleport($defaultWorld->getSpawnLocation());
             return null;
         }
 
         if (!($plot->teleportTo($sender))) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "auto.teleportError" => [$plot->getWorldName(), $plot->getX(), $plot->getZ()]]);
+            $sender->teleport($defaultWorld->getSpawnLocation());
             return null;
         }
         $location = $sender->getLocation();

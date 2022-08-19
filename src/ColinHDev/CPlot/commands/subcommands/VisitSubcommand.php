@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace ColinHDev\CPlot\commands\subcommands;
 
+use ColinHDev\CPlot\commands\PlotCommand;
 use ColinHDev\CPlot\commands\Subcommand;
 use ColinHDev\CPlot\player\PlayerData;
 use ColinHDev\CPlot\plots\Plot;
 use ColinHDev\CPlot\plots\PlotPlayer;
 use ColinHDev\CPlot\provider\DataProvider;
 use ColinHDev\CPlot\provider\LanguageManager;
+use ColinHDev\CPlot\ResourceManager;
+use ColinHDev\CPlot\worlds\WorldSettings;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\Server;
@@ -19,7 +22,17 @@ use pocketmine\Server;
  */
 class VisitSubcommand extends Subcommand {
 
-    private CONST DEFAULT_WORLD = "skyblock";
+    private ?string $fallbackWorld;
+
+    public function __construct(string $key) {
+        parent::__construct($key);
+        $fallbackWorld = ResourceManager::getInstance()->getConfig()->get("auto.fallbackWorld", false);
+        if ($fallbackWorld === false || $fallbackWorld === "false" || !is_string($fallbackWorld)) {
+            $this->fallbackWorld = null;
+        } else {
+            $this->fallbackWorld = $fallbackWorld;
+        }
+    }
 
     public function execute(CommandSender $sender, array $args) : \Generator {
         if (!$sender instanceof Player) {
@@ -27,13 +40,16 @@ class VisitSubcommand extends Subcommand {
             return null;
         }
 
-        if($sender->getWorld()->getDisplayName() !== self::DEFAULT_WORLD){
-            $defaultWorld = Server::getInstance()->getWorldManager()->getWorldByName(self::DEFAULT_WORLD);
-            if($defaultWorld === null){
-                yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "visit.invalidWorld"]);
+        $worldName = $sender->getWorld()->getFolderName();
+        $worldSettings = yield from DataProvider::getInstance()->awaitWorld($worldName);
+        if (!($worldSettings instanceof WorldSettings) && is_string($this->fallbackWorld)) {
+            $worldName = $this->fallbackWorld;
+            $world = Server::getInstance()->getWorldManager()->getWorldByName($worldName);
+            if ($world === null) {
+                yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "visit.worldNotFound"]);
                 return null;
             }
-            $sender->teleport($defaultWorld->getSpawnLocation());
+            $sender->teleport($world->getSpawnLocation());
         }
 
         switch (count($args)) {
