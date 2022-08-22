@@ -13,6 +13,7 @@ use ColinHDev\CPlot\provider\DataProvider;
 use ColinHDev\CPlot\provider\LanguageManager;
 use ColinHDev\CPlot\ResourceManager;
 use ColinHDev\CPlot\worlds\WorldSettings;
+use czechpmdevs\multiworld\util\WorldUtils;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\Server;
@@ -44,12 +45,8 @@ class VisitSubcommand extends Subcommand {
         $worldSettings = yield from DataProvider::getInstance()->awaitWorld($worldName);
         if (!($worldSettings instanceof WorldSettings) && is_string($this->fallbackWorld)) {
             $worldName = $this->fallbackWorld;
-            $world = Server::getInstance()->getWorldManager()->getWorldByName($worldName);
-            if ($world === null) {
-                yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "visit.worldNotFound"]);
-                return null;
-            }
-            $sender->teleport($world->getSpawnLocation());
+            $worldFallback = WorldUtils::getLoadedWorldByName($worldName);
+            $sender->teleport($worldFallback?->getSafeSpawn());
         }
 
         switch (count($args)) {

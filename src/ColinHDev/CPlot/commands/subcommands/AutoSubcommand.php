@@ -14,6 +14,7 @@ use ColinHDev\CPlot\provider\DataProvider;
 use ColinHDev\CPlot\provider\LanguageManager;
 use ColinHDev\CPlot\ResourceManager;
 use ColinHDev\CPlot\worlds\WorldSettings;
+use czechpmdevs\multiworld\util\WorldUtils;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Location;
 use pocketmine\player\Player;
@@ -74,8 +75,8 @@ class AutoSubcommand extends Subcommand {
         if (!($worldSettings instanceof WorldSettings) && is_string($this->fallbackWorld)) {
             $worldName = $this->fallbackWorld;
             $worldSettings = yield from DataProvider::getInstance()->awaitWorld($worldName);
-            $worldFallback = Server::getInstance()->getWorldManager()->getWorldByName($worldName);
-            $sender->teleport($worldFallback->getSpawnLocation());
+            $worldFallback = WorldUtils::getLoadedWorldByName($worldName);
+            $sender->teleport($worldFallback?->getSafeSpawn());
         }
 
         /** @var Plot|null $plot */
