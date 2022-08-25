@@ -15,6 +15,7 @@ use ColinHDev\CPlot\ResourceManager;
 use ColinHDev\CPlot\worlds\WorldSettings;
 use czechpmdevs\multiworld\util\WorldUtils;
 use pocketmine\command\CommandSender;
+use pocketmine\console\ConsoleCommandSender;
 use pocketmine\player\Player;
 use pocketmine\Server;
 
@@ -24,8 +25,9 @@ use pocketmine\Server;
 class VisitSubcommand extends Subcommand {
 
     private ?string $fallbackWorld;
+    private PlotCommand $command;
 
-    public function __construct(string $key) {
+    public function __construct(string $key, PlotCommand $command) {
         parent::__construct($key);
         $fallbackWorld = ResourceManager::getInstance()->getConfig()->get("auto.fallbackWorld", false);
         if ($fallbackWorld === false || $fallbackWorld === "false" || !is_string($fallbackWorld)) {
@@ -33,6 +35,7 @@ class VisitSubcommand extends Subcommand {
         } else {
             $this->fallbackWorld = $fallbackWorld;
         }
+        $this->command = $command;
     }
 
     public function execute(CommandSender $sender, array $args) : \Generator {
@@ -58,7 +61,7 @@ class VisitSubcommand extends Subcommand {
                 /** @var Plot[] $plots */
                 $plots = yield DataProvider::getInstance()->awaitPlotsByPlotPlayer($playerData->getPlayerID(), PlotPlayer::STATE_OWNER);
                 if (count($plots) === 0) {
-                    yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "visit.noArguments.noPlots"]);
+                    yield from $this->command->getSubcommandByName("auto")->execute($sender, []);
                     return null;
                 }
                 /** @var Plot $plot */

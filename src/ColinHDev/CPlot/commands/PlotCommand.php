@@ -31,9 +31,11 @@ use ColinHDev\CPlot\commands\subcommands\VisitSubcommand;
 use ColinHDev\CPlot\commands\subcommands\WallSubcommand;
 use ColinHDev\CPlot\commands\subcommands\WarpSubcommand;
 use ColinHDev\CPlot\CPlot;
+use ColinHDev\CPlot\form\Forms;
 use ColinHDev\CPlot\provider\LanguageManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\player\Player;
 use pocketmine\plugin\Plugin;
 use pocketmine\plugin\PluginOwned;
 use SOFe\AwaitGenerator\Await;
@@ -83,7 +85,7 @@ class PlotCommand extends Command implements PluginOwned {
         $this->registerSubcommand(new TrustSubcommand("trust"));
         $this->registerSubcommand(new UndenySubcommand("undeny"));
         $this->registerSubcommand(new UntrustSubcommand("untrust"));
-        $this->registerSubcommand(new VisitSubcommand("visit"));
+        $this->registerSubcommand(new VisitSubcommand("visit", $this));
         //$this->registerSubcommand(new WallSubcommand("wall"));
         $this->registerSubcommand(new WarpSubcommand("warp"));
     }
@@ -120,7 +122,9 @@ class PlotCommand extends Command implements PluginOwned {
         }
 
         if (count($args) === 0) {
-            LanguageManager::getInstance()->getProvider()->sendMessage($sender, ["prefix", "plot.usage"]);
+            if($sender instanceof Player) {
+                Forms::sendStartForm($sender, $this);
+            }
             return;
         }
 
