@@ -26,11 +26,15 @@ use ColinHDev\CPlot\listener\PlayerLoginListener;
 use ColinHDev\CPlot\listener\PlayerMoveListener;
 use ColinHDev\CPlot\listener\ProjectileLaunchListener;
 use ColinHDev\CPlot\listener\StructureGrowListener;
+use ColinHDev\CPlot\plots\Plot;
 use ColinHDev\CPlot\provider\DataProvider;
 use ColinHDev\CPlot\provider\EconomyManager;
 use ColinHDev\CPlot\tasks\EntityMovementTask;
 use ColinHDev\CPlot\worlds\generator\PlotGenerator;
 use ColinHDev\CPlot\worlds\generator\SchematicGenerator;
+use ColinHDev\CPlot\worlds\WorldSettings;
+use phuongaz\papi\PlaceHolderAPI;
+use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\world\generator\GeneratorManager;
@@ -46,6 +50,7 @@ class CPlot extends PluginBase {
         ResourceManager::getInstance();
         DataProvider::getInstance();
         EconomyManager::getInstance();
+        (new PlaceHolderAPI())->init();
 
         $generatorManager = GeneratorManager::getInstance();
         $generatorManager->addGenerator(PlotGenerator::class, PlotGenerator::GENERATOR_NAME, fn() => null, true);
@@ -78,5 +83,60 @@ class CPlot extends PluginBase {
         $pluginManager->registerEvents(new StructureGrowListener(), $this);
 
         $server->getCommandMap()->register("CPlot", new PlotCommand());
+    }
+
+    private function registerPlaceHolders() :void {
+        $papi = PlaceHolderAPI::getInstance();
+
+        $registerFunction = function (Player $player, callable $getInfoFunction) {
+            $position = $player->getPosition();
+            $world = $position->getWorld();
+
+            $dataProvider = DataProvider::getInstance();
+            $worldSettings = yield $dataProvider->awaitWorld($world->getFolderName());
+
+            if (!($worldSettings instanceof WorldSettings)) {
+                return "N/A";
+            }
+
+            $plot = yield Plot::awaitFromPosition($position);
+
+            if (!($plot instanceof Plot)) {
+                return "N/A";
+            }
+
+            $info = $getInfoFunction($plot);
+            return implode(", ", $info);
+        };
+
+        $papi->register("cplot_owners_implode", function(Player $player) use ($registerFunction) {
+            return $registerFunction($player, function ($plot) {
+                return $plot->getPlotOwners();
+            });
+        });
+
+        $papi->register("cplot_helpers_implode", function(Player $player) use ($registerFunction) {
+            return $registerFunction($player, function ($plot) {
+                return $plot->getPlotHelpers();
+            });
+        });
+
+        $papi->register("cplot_players_implode", function(Player $player) use ($registerFunction) {
+            return $registerFunction($player, function ($plot) {
+                return $plot->getPlotPlayers();
+            });
+        });
+
+        $papi->register("cplot_trusted_count", function(Player $player) use ($registerFunction) {
+            return $registerFunction($player, function ($plot) {
+                return count($plot->getPlotTrusted());
+            });
+        });
+
+        $papi->register("cplot_rates_count", function(Player $player) use ($registerFunction) {
+            return $registerFunction($player, function ($plot) {
+                return count($plot->getPlotRates());
+            });
+        });
     }
 }
