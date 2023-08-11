@@ -7,7 +7,6 @@ namespace ColinHDev\CPlot\commands;
 use ColinHDev\CPlot\commands\subcommands\AddSubcommand;
 use ColinHDev\CPlot\commands\subcommands\AutoSubcommand;
 use ColinHDev\CPlot\commands\subcommands\BiomeSubcommand;
-use ColinHDev\CPlot\commands\subcommands\BorderSubcommand;
 use ColinHDev\CPlot\commands\subcommands\ClaimSubcommand;
 use ColinHDev\CPlot\commands\subcommands\ClearSubcommand;
 use ColinHDev\CPlot\commands\subcommands\DeniedSubcommand;
@@ -28,7 +27,6 @@ use ColinHDev\CPlot\commands\subcommands\TrustSubcommand;
 use ColinHDev\CPlot\commands\subcommands\UndenySubcommand;
 use ColinHDev\CPlot\commands\subcommands\UntrustSubcommand;
 use ColinHDev\CPlot\commands\subcommands\VisitSubcommand;
-use ColinHDev\CPlot\commands\subcommands\WallSubcommand;
 use ColinHDev\CPlot\commands\subcommands\WarpSubcommand;
 use ColinHDev\CPlot\CPlot;
 use ColinHDev\CPlot\form\Forms;
@@ -65,7 +63,6 @@ class PlotCommand extends Command implements PluginOwned {
         $this->registerSubcommand(new AddSubcommand("add"));
         $this->registerSubcommand(new AutoSubcommand("auto", $this));
         $this->registerSubcommand(new BiomeSubcommand("biome"));
-        //$this->registerSubcommand(new BorderSubcommand("border"));
         $this->registerSubcommand(new ClaimSubcommand("claim"));
         $this->registerSubcommand(new ClearSubcommand("clear"));
         $this->registerSubcommand(new DeniedSubcommand("denied"));
@@ -86,7 +83,6 @@ class PlotCommand extends Command implements PluginOwned {
         $this->registerSubcommand(new UndenySubcommand("undeny"));
         $this->registerSubcommand(new UntrustSubcommand("untrust"));
         $this->registerSubcommand(new VisitSubcommand("visit", $this));
-        //$this->registerSubcommand(new WallSubcommand("wall"));
         $this->registerSubcommand(new WarpSubcommand("warp"));
     }
 
@@ -123,7 +119,7 @@ class PlotCommand extends Command implements PluginOwned {
 
         if (count($args) === 0) {
             if($sender instanceof Player) {
-                Forms::sendStartForm($sender, $this);
+                Forms::sendStartForm($sender);
             }
             return;
         }

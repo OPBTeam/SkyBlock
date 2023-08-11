@@ -24,7 +24,8 @@ interface Flag {
 
     /**
      * Checks if the given flag is the same as this one and if so, checks if both share the same value.
-     * @param static<mixed> $other
+     * @param object $other
+     * @return bool
      */
     public function equals(object $other) : bool;
 

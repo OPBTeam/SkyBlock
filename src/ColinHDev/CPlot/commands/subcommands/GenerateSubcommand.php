@@ -10,6 +10,8 @@ use ColinHDev\CPlot\provider\DataProvider;
 use ColinHDev\CPlot\provider\LanguageManager;
 use ColinHDev\CPlot\worlds\generator\PlotGenerator;
 use ColinHDev\CPlot\worlds\WorldSettings;
+use Generator;
+use JsonException;
 use pocketmine\command\CommandSender;
 use pocketmine\math\Vector3;
 use pocketmine\player\Player;
@@ -22,9 +24,9 @@ use pocketmine\world\WorldCreationOptions;
 class GenerateSubcommand extends Subcommand {
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
-    public function execute(CommandSender $sender, array $args) : \Generator {
+    public function execute(CommandSender $sender, array $args) : Generator {
         if (count($args) === 0) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "generate.usage"]);
             return null;

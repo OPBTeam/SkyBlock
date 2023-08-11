@@ -14,10 +14,11 @@ use ColinHDev\CPlot\provider\LanguageManager;
 use ColinHDev\CPlot\ResourceManager;
 use ColinHDev\CPlot\worlds\WorldSettings;
 use czechpmdevs\multiworld\util\WorldUtils;
+use Generator;
 use pocketmine\command\CommandSender;
-use pocketmine\console\ConsoleCommandSender;
 use pocketmine\player\Player;
 use pocketmine\Server;
+use Throwable;
 
 /**
  * @phpstan-extends Subcommand<mixed, mixed, mixed, null>
@@ -29,7 +30,7 @@ class VisitSubcommand extends Subcommand {
 
     public function __construct(string $key, PlotCommand $command) {
         parent::__construct($key);
-        $fallbackWorld = ResourceManager::getInstance()->getConfig()->get("auto.fallbackWorld", false);
+        $fallbackWorld = ResourceManager::getInstance()->getConfig()->get("auto.fallbackWorld");
         if ($fallbackWorld === false || $fallbackWorld === "false" || !is_string($fallbackWorld)) {
             $this->fallbackWorld = null;
         } else {
@@ -38,7 +39,7 @@ class VisitSubcommand extends Subcommand {
         $this->command = $command;
     }
 
-    public function execute(CommandSender $sender, array $args) : \Generator {
+    public function execute(CommandSender $sender, array $args) : Generator {
         if (!$sender instanceof Player) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "visit.senderNotOnline"]);
             return null;
@@ -100,7 +101,7 @@ class VisitSubcommand extends Subcommand {
                     return null;
                 }
 
-                $player = Server::getInstance()->getPlayerByPrefix($args[0]);
+                $player = Server::getInstance()->getPlayerExact($args[0]);
                 if ($player instanceof Player) {
                     /** @phpstan-var PlayerData|null $playerData */
                     $playerData = yield DataProvider::getInstance()->awaitPlayerDataByPlayer($player);
@@ -144,7 +145,7 @@ class VisitSubcommand extends Subcommand {
                 return null;
 
             default:
-                $player = Server::getInstance()->getPlayerByPrefix($args[0]);
+                $player = Server::getInstance()->getPlayerExact($args[0]);
                 if ($player instanceof Player) {
                     /** @phpstan-var PlayerData|null $playerData */
                     $playerData = yield DataProvider::getInstance()->awaitPlayerDataByPlayer($player);
@@ -181,7 +182,7 @@ class VisitSubcommand extends Subcommand {
         return null;
     }
 
-    public function onError(CommandSender $sender, \Throwable $error) : void {
+    public function onError(CommandSender $sender, Throwable $error) : void {
         if ($sender instanceof Player && !$sender->isConnected()) {
             return;
         }

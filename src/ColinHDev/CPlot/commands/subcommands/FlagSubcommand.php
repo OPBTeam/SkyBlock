@@ -16,6 +16,7 @@ use ColinHDev\CPlot\plots\TeleportDestination;
 use ColinHDev\CPlot\provider\DataProvider;
 use ColinHDev\CPlot\provider\LanguageManager;
 use ColinHDev\CPlot\worlds\WorldSettings;
+use Generator;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use function assert;
@@ -26,7 +27,7 @@ use function is_array;
  */
 class FlagSubcommand extends Subcommand {
 
-    public function execute(CommandSender $sender, array $args) : \Generator {
+    public function execute(CommandSender $sender, array $args) : Generator {
         if (count($args) === 0) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "flag.usage"]);
             return null;

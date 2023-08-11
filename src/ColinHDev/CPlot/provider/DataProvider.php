@@ -23,6 +23,7 @@ use ColinHDev\CPlot\ResourceManager;
 use ColinHDev\CPlot\utils\ParseUtils;
 use ColinHDev\CPlot\worlds\WorldSettings;
 use Generator;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\player\Player;
 use pocketmine\utils\SingletonTrait;
 use poggit\libasynql\DataConnector;
@@ -590,12 +591,12 @@ final class DataProvider {
         if ($worldSettings instanceof WorldSettings || $worldSettings === false) {
             return $worldSettings;
         }
-        /** @phpstan-var array{0?: array{worldType?: string, roadSchematic?: string, mergeRoadSchematic?: string, plotSchematic?: string, roadSize?: int, plotSize?: int, groundSize?: int, roadBlock?: string, borderBlock?: string, borderBlockOnClaim?: string, plotFloorBlock?: string, plotFillBlock?: string, plotBottomBlock?: string, deviatedVector?: string}} $rows */
+        /** @phpstan-var array{0?: array{worldType?: string, roadSchematic?: string, mergeRoadSchematic?: string, plotSchematic?: string, roadSize?: int, plotSize?: int, groundSize?: int, airBlock?: string, roadBlock?: string, borderBlock?: string, borderBlockOnClaim?: string, plotFloorBlock?: string, plotFillBlock?: string, plotBottomBlock?: string, deviatedVector?: string}} $rows */
         $rows = yield from $this->database->asyncSelect(
             self::GET_WORLD,
             ["worldName" => $worldName]
         );
-        /** @phpstan-var null|array{worldType?: string, roadSchematic?: string, mergeRoadSchematic?: string, plotSchematic?: string, roadSize?: int, plotSize?: int, groundSize?: int, roadBlock?: string, borderBlock?: string, borderBlockOnClaim?: string, plotFloorBlock?: string, plotFillBlock?: string, plotBottomBlock?: string, deviatedVector?: string} $worldData */
+        /** @phpstan-var null|array{worldType?: string, roadSchematic?: string, mergeRoadSchematic?: string, plotSchematic?: string, roadSize?: int, plotSize?: int, groundSize?: int, airBlock?: string, roadBlock?: string, borderBlock?: string, borderBlockOnClaim?: string, plotFloorBlock?: string, plotFillBlock?: string, plotBottomBlock?: string, deviatedVector?: string} $worldData */
         $worldData = $rows[array_key_first($rows)] ?? null;
         if ($worldData === null) {
             $worldSettings = false;
@@ -622,6 +623,7 @@ final class DataProvider {
                 "roadSize" => $worldSettings->getRoadSize(),
                 "plotSize" => $worldSettings->getPlotSize(),
                 "groundSize" => $worldSettings->getGroundSize(),
+                "airBlock" => VanillaBlocks::AIR(),
                 "roadBlock" => ParseUtils::parseStringFromBlock($worldSettings->getRoadBlock()),
                 "borderBlock" => ParseUtils::parseStringFromBlock($worldSettings->getBorderBlock()),
                 "plotFloorBlock" => ParseUtils::parseStringFromBlock($worldSettings->getPlotFloorBlock()),

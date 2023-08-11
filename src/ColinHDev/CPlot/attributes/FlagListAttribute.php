@@ -13,7 +13,6 @@ use function count;
 use function explode;
 use function implode;
 use function is_array;
-use function is_string;
 use function json_decode;
 use function json_encode;
 use const JSON_THROW_ON_ERROR;
@@ -76,7 +75,6 @@ abstract class FlagListAttribute extends ListAttribute {
         $values = $this->value;
         /** @var Flag<mixed> $newFlag */
         foreach ($value as $newFlag) {
-            /** @var Flag<mixed> $oldFlag */
             foreach($values as $i => $oldFlag) {
                 if (!($oldFlag instanceof $newFlag)) {
                     continue;
@@ -179,7 +177,8 @@ abstract class FlagListAttribute extends ListAttribute {
     }
 
     /**
-     * @return Flag<mixed>|null
+     * @param string $flagString
+     * @return Flag|null
      * @throws AttributeParseException
      */
     private function parseFlagFromString(string $flagString) : ?Flag {

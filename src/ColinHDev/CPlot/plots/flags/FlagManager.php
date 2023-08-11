@@ -106,7 +106,7 @@ final class FlagManager {
     }
 
     /**
-     * Returns the {@see Flag} with the given ID with its value being the its default value.
+     * Returns the {@see Flag} with the given ID with its value being the default value.
      * @param string $ID
      * @phpstan-return ($ID is FlagIDs::* ? Flag<mixed> : null)
      */

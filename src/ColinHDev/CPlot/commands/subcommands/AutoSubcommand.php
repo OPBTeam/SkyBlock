@@ -15,6 +15,7 @@ use ColinHDev\CPlot\provider\LanguageManager;
 use ColinHDev\CPlot\ResourceManager;
 use ColinHDev\CPlot\worlds\WorldSettings;
 use czechpmdevs\multiworld\util\WorldUtils;
+use Generator;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Location;
 use pocketmine\player\Player;
@@ -32,11 +33,11 @@ class AutoSubcommand extends Subcommand {
 
     public function __construct(string $key, PlotCommand $command) {
         parent::__construct($key);
-        $this->automaticClaim = match(ResourceManager::getInstance()->getConfig()->get("auto.automaticClaim", false)) {
+        $this->automaticClaim = match(ResourceManager::getInstance()->getConfig()->get("auto.automaticClaim")) {
             true, "true" => true,
             default => false
         };
-        $fallbackWorld = ResourceManager::getInstance()->getConfig()->get("auto.fallbackWorld", false);
+        $fallbackWorld = ResourceManager::getInstance()->getConfig()->get("auto.fallbackWorld");
         if ($fallbackWorld === false || $fallbackWorld === "false" || !is_string($fallbackWorld)) {
             $this->fallbackWorld = null;
         } else {
@@ -45,7 +46,7 @@ class AutoSubcommand extends Subcommand {
         $this->command = $command;
     }
 
-    public function execute(CommandSender $sender, array $args) : \Generator {
+    public function execute(CommandSender $sender, array $args) : Generator {
         if (!$sender instanceof Player) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "auto.senderNotOnline"]);
             return null;

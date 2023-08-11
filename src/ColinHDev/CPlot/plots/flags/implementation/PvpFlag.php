@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ColinHDev\CPlot\plots\flags\implementation;
 
-use ColinHDev\CPlot\attributes\BaseAttribute;
 use ColinHDev\CPlot\attributes\BooleanAttribute;
 use ColinHDev\CPlot\plots\flags\Flag;
 use ColinHDev\CPlot\plots\flags\FlagIDs;

@@ -14,8 +14,6 @@ use ColinHDev\CPlot\player\settings\Settings;
 use ColinHDev\CPlot\plots\flags\Flags;
 use ColinHDev\CPlot\plots\flags\implementation\FarewellFlag;
 use ColinHDev\CPlot\plots\flags\implementation\GreetingFlag;
-use ColinHDev\CPlot\plots\flags\implementation\PlotEnterFlag;
-use ColinHDev\CPlot\plots\flags\implementation\PlotLeaveFlag;
 use ColinHDev\CPlot\plots\Plot;
 use ColinHDev\CPlot\plots\TeleportDestination;
 use ColinHDev\CPlot\provider\DataProvider;

@@ -14,19 +14,21 @@ use ColinHDev\CPlot\provider\LanguageManager;
 use ColinHDev\CPlot\provider\utils\EconomyException;
 use ColinHDev\CPlot\tasks\async\PlotMergeAsyncTask;
 use ColinHDev\CPlot\worlds\WorldSettings;
+use Generator;
 use pocketmine\command\CommandSender;
 use pocketmine\math\Facing;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\World;
 use SOFe\AwaitGenerator\Await;
+use Throwable;
 
 /**
  * @phpstan-extends Subcommand<mixed, mixed, mixed, null>
  */
 class MergeSubcommand extends Subcommand {
 
-    public function execute(CommandSender $sender, array $args) : \Generator {
+    public function execute(CommandSender $sender, array $args) : Generator {
         if (!$sender instanceof Player) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "merge.senderNotOnline"]);
             return null;
@@ -134,7 +136,7 @@ class MergeSubcommand extends Subcommand {
         return null;
     }
 
-    public function onError(CommandSender $sender, \Throwable $error) : void {
+    public function onError(CommandSender $sender, Throwable $error) : void {
         if ($sender instanceof Player && !$sender->isConnected()) {
             return;
         }

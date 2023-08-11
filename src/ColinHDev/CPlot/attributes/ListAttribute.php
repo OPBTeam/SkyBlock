@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ColinHDev\CPlot\attributes;
 
 /**
- * @template TValue of array<mixed>
+ * @template TValue of array
  * @extends BaseAttribute<TValue>
  */
 abstract class ListAttribute extends BaseAttribute {

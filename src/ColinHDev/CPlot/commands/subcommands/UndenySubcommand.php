@@ -14,15 +14,17 @@ use ColinHDev\CPlot\plots\PlotPlayer;
 use ColinHDev\CPlot\provider\DataProvider;
 use ColinHDev\CPlot\provider\LanguageManager;
 use ColinHDev\CPlot\worlds\WorldSettings;
+use Generator;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
+use Throwable;
 
 /**
  * @phpstan-extends Subcommand<mixed, mixed, mixed, null>
  */
 class UndenySubcommand extends Subcommand {
 
-    public function execute(CommandSender $sender, array $args) : \Generator {
+    public function execute(CommandSender $sender, array $args) : Generator {
         if (!$sender instanceof Player) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "undeny.senderNotOnline"]);
             return null;
@@ -34,7 +36,7 @@ class UndenySubcommand extends Subcommand {
         }
 
         if ($args[0] !== "*") {
-            $player = $sender->getServer()->getPlayerByPrefix($args[0]);
+            $player = $sender->getServer()->getPlayerExact($args[0]);
             if ($player instanceof Player) {
                 $playerName = $player->getName();
             } else {
@@ -99,7 +101,7 @@ class UndenySubcommand extends Subcommand {
         return null;
     }
 
-    public function onError(CommandSender $sender, \Throwable $error) : void {
+    public function onError(CommandSender $sender, Throwable $error) : void {
         if ($sender instanceof Player && !$sender->isConnected()) {
             return;
         }

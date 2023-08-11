@@ -12,8 +12,10 @@ use ColinHDev\CPlot\player\settings\Setting;
 use ColinHDev\CPlot\player\settings\SettingManager;
 use ColinHDev\CPlot\provider\DataProvider;
 use ColinHDev\CPlot\provider\LanguageManager;
+use Generator;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
+use Throwable;
 use function assert;
 use function is_array;
 
@@ -22,7 +24,7 @@ use function is_array;
  */
 class SettingSubcommand extends Subcommand {
 
-    public function execute(CommandSender $sender, array $args) : \Generator {
+    public function execute(CommandSender $sender, array $args) : Generator {
         if (count($args) === 0) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "setting.usage"]);
             return null;
@@ -228,7 +230,7 @@ class SettingSubcommand extends Subcommand {
         return null;
     }
 
-    public function onError(CommandSender $sender, \Throwable $error) : void {
+    public function onError(CommandSender $sender, Throwable $error) : void {
         if ($sender instanceof Player && !$sender->isConnected()) {
             return;
         }

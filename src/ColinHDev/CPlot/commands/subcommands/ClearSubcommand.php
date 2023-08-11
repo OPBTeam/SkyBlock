@@ -14,17 +14,19 @@ use ColinHDev\CPlot\provider\LanguageManager;
 use ColinHDev\CPlot\provider\utils\EconomyException;
 use ColinHDev\CPlot\tasks\async\PlotClearAsyncTask;
 use ColinHDev\CPlot\worlds\WorldSettings;
+use Generator;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use SOFe\AwaitGenerator\Await;
+use Throwable;
 
 /**
  * @phpstan-extends Subcommand<mixed, mixed, mixed, null>
  */
 class ClearSubcommand extends Subcommand {
 
-    public function execute(CommandSender $sender, array $args) : \Generator {
+    public function execute(CommandSender $sender, array $args) : Generator {
         if (!$sender instanceof Player) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "clear.senderNotOnline"]);
             return null;
@@ -84,7 +86,7 @@ class ClearSubcommand extends Subcommand {
         return null;
     }
 
-    public function onError(CommandSender $sender, \Throwable $error) : void {
+    public function onError(CommandSender $sender, Throwable $error) : void {
         if ($sender instanceof Player && !$sender->isConnected()) {
             return;
         }

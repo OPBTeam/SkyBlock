@@ -59,7 +59,7 @@ abstract class BaseAttribute {
     abstract public function createInstance(mixed $value) : static;
 
     /**
-     * Merges this attributes's value with another value and return an instance holding the merged value.
+     * Merges this attribute's value with another value and return an instance holding the merged value.
      *
      * @param TValue $value
      * @return self<TValue>
@@ -89,7 +89,7 @@ abstract class BaseAttribute {
     abstract public function toReadableString() : string;
 
     /**
-     * Parse a string into a attribute value, and throw an exception in the case that the string does not represent a
+     * Parse a string into an attribute value, and throw an exception in the case that the string does not represent a
      * valid value.
      * Returns the parsed value.
      *

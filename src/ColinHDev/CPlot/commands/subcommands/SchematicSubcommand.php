@@ -12,11 +12,14 @@ use ColinHDev\CPlot\worlds\generator\SchematicGenerator;
 use ColinHDev\CPlot\worlds\schematic\Schematic;
 use ColinHDev\CPlot\worlds\schematic\SchematicTypes;
 use ColinHDev\CPlot\worlds\WorldSettings;
+use Generator;
+use JsonException;
 use pocketmine\command\CommandSender;
 use pocketmine\math\Vector3;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\WorldCreationOptions;
+use RuntimeException;
 
 /**
  * @phpstan-extends Subcommand<mixed, mixed, mixed, null>
@@ -24,9 +27,9 @@ use pocketmine\world\WorldCreationOptions;
 class SchematicSubcommand extends Subcommand {
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
-    public function execute(CommandSender $sender, array $args) : \Generator {
+    public function execute(CommandSender $sender, array $args) : Generator {
         if (count($args) === 0) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "schematic.usage"]);
             return null;
@@ -74,9 +77,11 @@ class SchematicSubcommand extends Subcommand {
                     yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "schematic.info.schematicNotFound" => $args[1]]);
                     break;
                 }
-                $schematic = new Schematic($args[1], $file);
-                if (!$schematic->loadFromFile()) {
-                    yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "schematic.info.loadSchematicError" => $args[1]]);
+                $schematic = new Schematic($file);
+                try {
+                    $schematic->loadFromFile();
+                } catch (RuntimeException) {
+                    yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "schematic.info.loadError" => $args[1]]);
                     break;
                 }
 
@@ -138,7 +143,7 @@ class SchematicSubcommand extends Subcommand {
                 }
                 yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "schematic.save.start" => $schematicName]);
                 $world = $sender->getWorld();
-                $task = new SchematicSaveAsyncTask($world, $pos1, $pos2, $schematicName, $file, $type, $worldSettings->getRoadSize(), $worldSettings->getPlotSize());
+                $task = new SchematicSaveAsyncTask($world, $pos1, $pos2, $file, $type, $worldSettings->getRoadSize(), $worldSettings->getPlotSize());
                 $task->setCallback(
                     static function (SchematicSaveAsyncTask $task) use ($world, $sender, $schematicName, $schematicType) : void {
                         /** @phpstan-var array{0: int, 1: int, 2: string} $result */
@@ -177,8 +182,10 @@ class SchematicSubcommand extends Subcommand {
                         yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "schematic.generate.schematicNotFound" => $args[2]]);
                         break;
                     }
-                    $schematic = new Schematic($args[2], $file);
-                    if (!$schematic->loadFromFile()) {
+                    $schematic = new Schematic($file);
+                    try {
+                        $schematic->loadFromFile();
+                    } catch (RuntimeException) {
                         yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "schematic.generate.loadSchematicError" => $args[2]]);
                         break;
                     }

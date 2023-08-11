@@ -13,6 +13,7 @@ use ColinHDev\CPlot\utils\promise\Promise;
 use ColinHDev\CPlot\utils\promise\PromiseResolver;
 use ColinHDev\CPlot\worlds\WorldSettings;
 use Generator;
+use InvalidArgumentException;
 use pocketmine\math\Facing;
 use pocketmine\math\Vector3;
 use pocketmine\player\Player;
@@ -35,16 +36,16 @@ final class CPlotAPI {
     private static ?CPlotAPI $instance = null;
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public static function getInstance(string $requestedAPI) : self {
         if (!VersionString::isValidBaseVersion($requestedAPI)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 "Invalid API version \"" . $requestedAPI . "\", should contain at least three version digits in the form MAJOR.MINOR.PATCH"
             );
         }
         if (!ApiVersion::isCompatible(self::API_VERSION, [$requestedAPI])) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 "Requested API version \"" . $requestedAPI . "\" is not compatible with this plugin's current API version \"" . self::API_VERSION . "\""
             );
         }

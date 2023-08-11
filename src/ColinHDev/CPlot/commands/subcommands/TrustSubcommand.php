@@ -14,15 +14,17 @@ use ColinHDev\CPlot\plots\PlotPlayer;
 use ColinHDev\CPlot\provider\DataProvider;
 use ColinHDev\CPlot\provider\LanguageManager;
 use ColinHDev\CPlot\worlds\WorldSettings;
+use Generator;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
+use Throwable;
 
 /**
  * @phpstan-extends Subcommand<mixed, mixed, mixed, null>
  */
 class TrustSubcommand extends Subcommand {
 
-    public function execute(CommandSender $sender, array $args) : \Generator {
+    public function execute(CommandSender $sender, array $args) : Generator {
         if (!$sender instanceof Player) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "trust.senderNotOnline"]);
             return null;
@@ -36,7 +38,7 @@ class TrustSubcommand extends Subcommand {
         $player = null;
         $playerData = null;
         if ($args[0] !== "*") {
-            $player = $sender->getServer()->getPlayerByPrefix($args[0]);
+            $player = $sender->getServer()->getPlayerExact($args[0]);
             if ($player instanceof Player) {
                 $playerUUID = $player->getUniqueId()->getBytes();
                 $playerXUID = $player->getXuid();
@@ -116,7 +118,7 @@ class TrustSubcommand extends Subcommand {
         return null;
     }
 
-    public function onError(CommandSender $sender, \Throwable $error) : void {
+    public function onError(CommandSender $sender, Throwable $error) : void {
         if ($sender instanceof Player && !$sender->isConnected()) {
             return;
         }

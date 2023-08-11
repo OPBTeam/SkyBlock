@@ -11,11 +11,13 @@ use ColinHDev\CPlot\provider\DataProvider;
 use ColinHDev\CPlot\provider\LanguageManager;
 use ColinHDev\CPlot\tasks\async\PlotBiomeChangeAsyncTask;
 use ColinHDev\CPlot\worlds\WorldSettings;
+use Generator;
 use pocketmine\command\CommandSender;
 use pocketmine\data\bedrock\BiomeIds;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\World;
+use ReflectionClass;
 use SOFe\AwaitGenerator\Await;
 
 /**
@@ -29,11 +31,11 @@ class BiomeSubcommand extends Subcommand {
     public function __construct(string $key) {
         parent::__construct($key);
         /** @phpstan-var array<string, BiomeIds::*> $biomes */
-        $biomes = (new \ReflectionClass(BiomeIds::class))->getConstants();
+        $biomes = (new ReflectionClass(BiomeIds::class))->getConstants();
         $this->biomes = $biomes;
     }
 
-    public function execute(CommandSender $sender, array $args) : \Generator {
+    public function execute(CommandSender $sender, array $args) : Generator {
         if (!($sender instanceof Player)) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "biome.senderNotOnline"]);
             return null;
@@ -48,7 +50,7 @@ class BiomeSubcommand extends Subcommand {
         }
 
         if (count($args) === 0) {
-            $biomeName = $this->getBiomeNameByID($world->getBiomeId($position->getFloorX(), $position->getFloorZ()));
+            $biomeName = $this->getBiomeNameByID($world->getBiomeId($position->getFloorX(), $position->getFloorY(), $position->getFloorZ()));
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "biome.plotBiome" => $biomeName]);
             return null;
         }

@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace ColinHDev\CPlot\commands\subcommands;
 
 use ColinHDev\CPlot\commands\Subcommand;
-use ColinHDev\CPlot\player\PlayerData;
 use ColinHDev\CPlot\plots\flags\Flag;
 use ColinHDev\CPlot\plots\flags\InternalFlag;
 use ColinHDev\CPlot\plots\Plot;
 use ColinHDev\CPlot\provider\DataProvider;
 use ColinHDev\CPlot\provider\LanguageManager;
 use ColinHDev\CPlot\worlds\WorldSettings;
+use Generator;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use function array_filter;
@@ -21,7 +21,7 @@ use function array_filter;
  */
 class InfoSubcommand extends Subcommand {
 
-    public function execute(CommandSender $sender, array $args) : \Generator {
+    public function execute(CommandSender $sender, array $args) : Generator {
         if (!$sender instanceof Player) {
             yield from LanguageManager::getInstance()->getProvider()->awaitMessageSendage($sender, ["prefix", "info.senderNotOnline"]);
             return null;
