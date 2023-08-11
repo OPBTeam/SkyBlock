@@ -83,6 +83,8 @@ class CPlot extends PluginBase {
         $pluginManager->registerEvents(new StructureGrowListener(), $this);
 
         $server->getCommandMap()->register("CPlot", new PlotCommand());
+
+        $this->registerPlaceHolders();
     }
 
     private function registerPlaceHolders() :void {
